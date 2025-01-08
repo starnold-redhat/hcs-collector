@@ -16,6 +16,7 @@ from execution import process_rhel_addons
 from execution import process_rhel_vdc
 from execution import collect_tags
 from execution import process_ansible
+from execution import process_rhel_versions
 
 
 def initial_directory_setup():
@@ -101,12 +102,18 @@ def process_data(tag):
     print("process data with a tag of " + tag)
 
     base_dir = setup_env.view_current_conf()['base_dir']
-
-    years = os.listdir(base_dir)
+ 
+    try:
+        years = os.listdir(base_dir)
+    except NotADirectoryError as e:
+        years = []
     # print(YEARS)
     for year in years:
         # print(year)
-        months = os.listdir(base_dir + "/" + year)
+        try:
+            months = os.listdir(base_dir + "/" + year)
+        except NotADirectoryError as e:
+            months = []
         for month in months:
             # print(month)
             csv_files_list = []
@@ -130,6 +137,9 @@ def generate_report(path_to_csv_dir, csv_files_list, path_to_json_dir, json_file
     print("## RHEL On-Demand")
     print("")
     process_rhel.ondemand_rhel(path_to_csv_dir, csv_files_list, tag)
+    print("## RHEL Versions")
+    print("")
+    process_rhel_versions.process_rhel_versions(path_to_csv_dir, csv_files_list, tag)
     print("## RHEL Add-ons")
     print("")
     process_rhel_addons.ondemand_rhel_related_products(path_to_csv_dir, csv_files_list, tag)

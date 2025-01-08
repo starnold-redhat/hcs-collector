@@ -64,5 +64,12 @@ def process(tag):
     """
     execution.process_data(tag)
 
+@main.command()
+def version():
+    """
+    Show the version of the hcs-collector tool
+    """
+    print("1.0.20250107")
+
 
 

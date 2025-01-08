@@ -26,7 +26,10 @@ def ondemand_mw_from_json(path_to_json_dir, json_files_list, tag):
 
 
         with open(path_to_json_dir + "/" + jsonFile, "r") as file_obj:
-            data = json.load(file_obj)
+            try:
+                data = json.load(file_obj)
+            except json.decoder.JSONDecodeError as e:
+                data = {}
             if ('results' in data):
                 for inventoryItem in data['results']:
                     # print(row)
